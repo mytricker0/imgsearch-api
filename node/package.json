@@ -1,0 +1,24 @@
+{
+  "name": "imgapi",
+  "version": "0.1.0",
+  "description": "Scrape direct image URLs from Bing, DuckDuckGo, Yandex, and Google",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "playwright install chromium"
+  },
+  "keywords": ["image", "search", "scraper", "bing", "duckduckgo", "yandex", "google"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0",
+    "playwright-extra": "^4.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "files": [
+    "index.js",
+    "_browser.js",
+    "engines/"
+  ]
+}

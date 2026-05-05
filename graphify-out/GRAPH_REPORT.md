@@ -1,7 +1,7 @@
 # Graph Report - image-api  (2026-05-04)
 
 ## Corpus Check
-- 16 files · ~3,524 words
+- 16 files · ~5,620 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -29,16 +29,16 @@
 10. `fetch_google()` - 2 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `fetch_yandex()` --calls--> `get_fetcher()`  [INFERRED]
-  imgapi/engines/yandex.py → imgapi/_fetcher.py
-- `fetch_bing()` --calls--> `get_fetcher()`  [INFERRED]
-  imgapi/engines/bing.py → imgapi/_fetcher.py
-- `fetch_google()` --calls--> `get_fetcher()`  [INFERRED]
-  imgapi/engines/google.py → imgapi/_fetcher.py
-- `fetch_ddg()` --calls--> `get_fetcher()`  [INFERRED]
-  imgapi/engines/ddg.py → imgapi/_fetcher.py
-- `fetchGoogle()` --calls--> `getBrowser()`  [INFERRED]
-  node/engines/google.js → node/_browser.js
+- `get_fetcher()` --calls--> `fetch_yandex()`  [INFERRED]
+  imgapi/_fetcher.py → imgapi/engines/yandex.py
+- `get_fetcher()` --calls--> `fetch_bing()`  [INFERRED]
+  imgapi/_fetcher.py → imgapi/engines/bing.py
+- `get_fetcher()` --calls--> `fetch_google()`  [INFERRED]
+  imgapi/_fetcher.py → imgapi/engines/google.py
+- `get_fetcher()` --calls--> `fetch_ddg()`  [INFERRED]
+  imgapi/_fetcher.py → imgapi/engines/ddg.py
+- `getBrowser()` --calls--> `fetchGoogle()`  [INFERRED]
+  node/_browser.js → node/engines/google.js
 
 ## Communities
 

@@ -7,7 +7,12 @@ let _browser = null;
 
 async function getBrowser() {
   if (!_browser) {
-    _browser = await chromium.launch({ headless: true });
+    // Use cached Chromium binary (shared with Python scrapling install)
+    const { chromium: pw } = require("playwright");
+    _browser = await chromium.launch({
+      headless: true,
+      executablePath: pw.executablePath(),
+    });
   }
   return _browser;
 }

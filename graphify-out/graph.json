@@ -187,7 +187,7 @@
       "label": "closeBrowser()",
       "file_type": "code",
       "source_file": "node/_browser.js",
-      "source_location": "L15",
+      "source_location": "L20",
       "id": "browser_closebrowser",
       "community": 2,
       "norm_label": "closebrowser()"
@@ -622,7 +622,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "node/_browser.js",
-      "source_location": "L15",
+      "source_location": "L20",
       "weight": 1.0,
       "_src": "node_browser_js",
       "_tgt": "browser_closebrowser",

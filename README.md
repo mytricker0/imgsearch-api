@@ -1,4 +1,4 @@
-# imgapi
+# imgsearch-api
 
 Scrape **direct image URLs** from Bing, DuckDuckGo, Yandex, and Google.
 Returns links like `https://example.com/photo.jpg` — not thumbnails, not base64, not search pages.
@@ -10,14 +10,14 @@ Returns links like `https://example.com/photo.jpg` — not thumbnails, not base6
 ### Python (pip)
 
 ```bash
-pip install imgapi
+pip install imgsearch-api
 scrapling install   # one-time: downloads stealth browser (~200 MB)
 ```
 
 ### Node.js (npm)
 
 ```bash
-npm install imgapi
+npm install imgsearch-api
 # browser is installed automatically via postinstall
 ```
 
@@ -28,7 +28,7 @@ npm install imgapi
 ### Import
 
 ```python
-from imgapi import image_search, random_image
+from imgsearch_api import image_search, random_image
 ```
 
 ---
@@ -50,7 +50,7 @@ Search for images matching a query. Returns a list of direct image URLs.
 **Examples**
 
 ```python
-from imgapi import image_search
+from imgsearch_api import image_search
 
 # Default: Bing first, DDG fills the rest
 urls = image_search("sunset", n=10)
@@ -60,9 +60,6 @@ urls = image_search("cat", engines=["bing"], n=5)
 
 # Multiple engines, tries each until n results collected
 urls = image_search("dog", engines=["bing", "ddg"], n=20)
-
-# With proxy (for Google / Yandex — see Engine notes below)
-urls = image_search("flowers", engines=["google"], n=5)
 ```
 
 ---
@@ -83,7 +80,7 @@ Returns a single random direct image URL for the query.
 **Examples**
 
 ```python
-from imgapi import random_image
+from imgsearch_api import random_image
 
 url = random_image("abstract art")
 # → "https://upload.wikimedia.org/wikipedia/commons/..."
@@ -100,23 +97,10 @@ url = random_image("mountain", engines=["bing"])
 |--------|-----|---------|-------|
 | Bing | `"bing"` | Full-size original URLs | ✅ Recommended. Fast, reliable, high quality. |
 | DuckDuckGo | `"ddg"` | Bing CDN thumbnails | ✅ Works. Uses Bing's index — thumbnails are valid images. |
-| Yandex | `"yandex"` | Full-size originals | ⚠️ May be geo-blocked (Russia traffic). Works with VPN. |
+| Yandex | `"yandex"` | Full-size originals | ⚠️ May be geo-blocked. Works with VPN. |
 | Google | `"google"` | Full-size originals | ⚠️ Requires residential proxy. Blocked by reCAPTCHA on most IPs. |
 
 **Recommended:** use `["bing"]` or `["bing", "ddg"]` for reliability.
-
-### Using Google or Yandex with a proxy
-
-Configure before calling any function:
-
-```python
-from scrapling.fetchers import StealthyFetcher
-
-StealthyFetcher.configure()  # global config
-# then pass proxy per-call via engines' internal fetcher (see below)
-```
-
-> Proxy support per-call is on the roadmap.
 
 ---
 
@@ -125,7 +109,7 @@ StealthyFetcher.configure()  # global config
 ### Import
 
 ```js
-const { imageSearch, randomImage, closeBrowser } = require("imgapi");
+const { imageSearch, randomImage, closeBrowser } = require("imgsearch-api");
 ```
 
 ---
@@ -143,15 +127,10 @@ const { imageSearch, randomImage, closeBrowser } = require("imgapi");
 **Returns** `Promise<string[]>`
 
 ```js
-const { imageSearch } = require("imgapi");
+const { imageSearch } = require("imgsearch-api");
 
-// Default engines
 const urls = await imageSearch("sunset", { n: 10 });
-
-// Specific engine
 const urls = await imageSearch("cat", { engines: ["bing"], n: 5 });
-
-// Multiple engines
 const urls = await imageSearch("dog", { engines: ["bing", "ddg"], n: 20 });
 ```
 
@@ -169,7 +148,7 @@ const urls = await imageSearch("dog", { engines: ["bing", "ddg"], n: 20 });
 **Returns** `Promise<string|null>`
 
 ```js
-const { randomImage } = require("imgapi");
+const { randomImage } = require("imgsearch-api");
 
 const url = await randomImage("abstract art");
 console.log(url); // "https://example.com/image.jpg"
@@ -179,10 +158,10 @@ console.log(url); // "https://example.com/image.jpg"
 
 ### `closeBrowser()`
 
-Call when done to shut down the browser instance cleanly.
+Shut down the browser instance cleanly when done.
 
 ```js
-const { imageSearch, closeBrowser } = require("imgapi");
+const { imageSearch, closeBrowser } = require("imgsearch-api");
 
 const urls = await imageSearch("mountain");
 console.log(urls);
@@ -193,29 +172,30 @@ await closeBrowser();
 
 ## How it works
 
-Each engine scrapes the search results page using a stealth headless browser (`StealthyFetcher` from [Scrapling](https://github.com/D4Vinci/Scrapling)) to bypass bot detection.
+Each engine scrapes results using a stealth headless browser to bypass bot detection. Image URLs are extracted from structured data — never from thumbnails or base64 blobs:
 
-Image URLs are extracted from structured data embedded in the page — not from thumbnails or base64 blobs:
+- **Bing**: parses `murl` from `a.iusc[m]` JSON attribute
+- **DDG**: decodes real URL from DDG CDN proxy `?u=` param
+- **Yandex**: parses `img_href` from `data-bem` JSON
+- **Google**: extracts `"ou":"..."` original URL from embedded script data
 
-- **Bing**: parses `murl` from the JSON `m` attribute on result links (`a.iusc[m]`)
-- **DDG**: extracts real URL from the `u=` parameter inside DDG's CDN proxy URLs
-- **Yandex**: parses `img_href` from `data-bem` JSON on result elements
-- **Google**: extracts `"ou":"..."` fields (original URL) from embedded script blobs
-
-The singleton fetcher reuses the browser session across calls — the browser starts once and stays open, making repeated calls faster.
+The browser stays open between calls (singleton) — starts once, reused for speed.
 
 ---
 
 ## Project structure
 
 ```
-imgapi/
-  __init__.py        # exports image_search, random_image
-  _fetcher.py        # StealthyFetcher singleton
-  search.py          # image_search + random_image logic
+imgsearch_api/       # Python package source
+  __init__.py
+  _fetcher.py
+  search.py
   engines/
-    bing.py
-    ddg.py
-    yandex.py
-    google.py
+    bing.py  ddg.py  yandex.py  google.py
+
+node/                # Node.js package source
+  index.js
+  _browser.js
+  engines/
+    bing.js  ddg.js  yandex.js  google.js
 ```

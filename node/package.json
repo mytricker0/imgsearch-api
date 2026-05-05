@@ -1,6 +1,6 @@
 {
-  "name": "imgapi",
-  "version": "0.1.0",
+  "name": "imgsearch-api",
+  "version": "0.1.1",
   "description": "Scrape direct image URLs from Bing, DuckDuckGo, Yandex, and Google",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "files": [
     "index.js",
     "_browser.js",
-    "engines/"
+    "engines/",
+    "README.md"
   ]
 }
